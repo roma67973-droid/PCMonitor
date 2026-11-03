@@ -1,0 +1,94 @@
+<UserControl x:Class="PCMonitor.Views.SettingsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:c="clr-namespace:PCMonitor.Controls"
+             xmlns:vm="clr-namespace:PCMonitor.ViewModels"
+             mc:Ignorable="d" d:DataContext="{d:DesignInstance vm:SettingsViewModel}">
+
+    <UserControl.Resources>
+        <Style x:Key="SectionTitle" TargetType="TextBlock" BasedOn="{StaticResource CardTitle}">
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+        <Style x:Key="AboutLine" TargetType="TextBlock" BasedOn="{StaticResource Sub}">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="0,2"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="20,0,20,24" MaxWidth="860" HorizontalAlignment="Left">
+
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Запуск" Style="{StaticResource SectionTitle}"/>
+                    <c:SettingRow BorderThickness="0" Title="Автозапуск вместе с Windows"
+                                  Description="Стартует при входе в систему, без окна UAC (через Планировщик задач).">
+                        <CheckBox Style="{StaticResource Switch}" IsChecked="{Binding AutostartEnabled}"/>
+                    </c:SettingRow>
+                    <c:SettingRow Title="При автозапуске — сразу в трей"
+                                  Description="Окно не открывается, программа тихо работает в фоне.">
+                        <CheckBox Style="{StaticResource Switch}" IsChecked="{Binding StartMinimized}"/>
+                    </c:SettingRow>
+                    <c:SettingRow Title="Крестик сворачивает в трей"
+                                  Description="Окно закрывается полностью и освобождает память, датчики и кулеры продолжают работать.">
+                        <CheckBox Style="{StaticResource Switch}" IsChecked="{Binding CloseToTray}"/>
+                    </c:SettingRow>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Мониторинг" Style="{StaticResource SectionTitle}"/>
+                    <c:SettingRow BorderThickness="0" Title="Частота обновления"
+                                  Description="Пока окно скрыто, опрос автоматически реже (2–5 с).">
+                        <Border Style="{StaticResource SegmentHost}">
+                            <c:SlidingHighlight Fill="{DynamicResource SelectionBrush}">
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton Style="{StaticResource Segment}" Content="0.5 с" IsChecked="{Binding IntervalMs, Converter={StaticResource Equals}, ConverterParameter=500}"/>
+                                    <RadioButton Style="{StaticResource Segment}" Content="1 с" IsChecked="{Binding IntervalMs, Converter={StaticResource Equals}, ConverterParameter=1000}"/>
+                                    <RadioButton Style="{StaticResource Segment}" Content="2 с" IsChecked="{Binding IntervalMs, Converter={StaticResource Equals}, ConverterParameter=2000}"/>
+                                    <RadioButton Style="{StaticResource Segment}" Content="3 с" IsChecked="{Binding IntervalMs, Converter={StaticResource Equals}, ConverterParameter=3000}"/>
+                                </StackPanel>
+                            </c:SlidingHighlight>
+                        </Border>
+                    </c:SettingRow>
+                    <c:SettingRow Title="Температура процессора на значке в трее"
+                                  Description="Цвет значка меняется: норма → тепло → горячо.">
+                        <CheckBox Style="{StaticResource Switch}" IsChecked="{Binding TrayTemp}"/>
+                    </c:SettingRow>
+                    <c:SettingRow Title="Анимации"
+                                  Description="Вращение кулеров и плавные индикаторы. Выключите, если важен каждый процент CPU.">
+                        <CheckBox Style="{StaticResource Switch}" IsChecked="{Binding Animations}"/>
+                    </c:SettingRow>
+                    <c:SettingRow Title="Скрывать пустые разъёмы вентиляторов"
+                                  Description="Разъёмы материнской платы с 0 об/мин не показываются.">
+                        <CheckBox Style="{StaticResource Switch}" IsChecked="{Binding HideEmptyFans}"/>
+                    </c:SettingRow>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Кулеры" Style="{StaticResource SectionTitle}"/>
+                    <c:SettingRow BorderThickness="0" Title="Аварийная защита от перегрева" Description="{Binding FailSafeDescription, Mode=OneTime}">
+                        <CheckBox Style="{StaticResource Switch}" IsChecked="{Binding FailSafe}"/>
+                    </c:SettingRow>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="О программе" Style="{StaticResource SectionTitle}" Margin="0,0,0,10"/>
+                    <TextBlock Style="{StaticResource AboutLine}"><Run Text="Потребление памяти: "/><Run Text="{Binding Status.AppMemoryText, Mode=OneWay}" Foreground="{DynamicResource TextBrush}"/></TextBlock>
+                    <TextBlock Style="{StaticResource AboutLine}"><Run Text="Права администратора: "/><Run Text="{Binding Status.AdminStatus, Mode=OneTime}" Foreground="{DynamicResource TextBrush}"/></TextBlock>
+                    <TextBlock Style="{StaticResource AboutLine}"><Run Text="Драйвер PawnIO (датчики мат. платы): "/><Run Text="{Binding Status.PawnIoStatus, Mode=OneTime}" Foreground="{DynamicResource TextBrush}"/></TextBlock>
+                    <TextBlock Style="{StaticResource AboutLine}"><Run Text="Файл настроек: "/><Run Text="{Binding SettingsPath, Mode=OneTime}" Foreground="{DynamicResource TextBrush}"/></TextBlock>
+                    <TextBlock Style="{StaticResource Sub}" FontSize="12" Margin="0,10,0,0" Text="Датчики: LibreHardwareMonitorLib (MPL-2.0)."/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

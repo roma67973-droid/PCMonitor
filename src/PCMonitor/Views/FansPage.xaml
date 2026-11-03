@@ -1,0 +1,126 @@
+<UserControl x:Class="PCMonitor.Views.FansPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:c="clr-namespace:PCMonitor.Controls"
+             xmlns:core="clr-namespace:PCMonitor.Core"
+             xmlns:v="clr-namespace:PCMonitor.Views"
+             xmlns:vm="clr-namespace:PCMonitor.ViewModels"
+             mc:Ignorable="d" d:DataContext="{d:DesignInstance vm:FansViewModel}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="28,0,28,24">
+            <v:StatusBanners DataContext="{Binding Status}" Margin="-8,0"/>
+
+            <DockPanel Margin="0,0,0,16">
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <Button Style="{StaticResource Ghost}" Content="Все — авто" Command="{Binding SetAllAutoCommand}" Margin="0,0,8,0"/>
+                    <Button Style="{StaticResource Ghost}" Content="Тихий профиль" Command="{Binding SetAllQuietCommand}" Margin="0,0,8,0"/>
+                    <Button Style="{StaticResource Ghost}" Content="Максимум" Command="{Binding SetAllMaxCommand}"/>
+                </StackPanel>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Summary}" Style="{StaticResource Sub}" FontSize="13"/>
+                    <TextBlock Text="Нажмите на название, чтобы переименовать. В «Кривой» перетаскивайте точки мышью." Style="{StaticResource Sub}" FontSize="11" Margin="0,3,0,0"/>
+                </StackPanel>
+            </DockPanel>
+
+            <ItemsControl ItemsSource="{Binding Items}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="vm:FanViewModel">
+                        <Border Style="{StaticResource Card}" Margin="0,0,0,14">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="270"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Показания -->
+                                <StackPanel>
+                                    <DockPanel>
+                                        <Grid Width="52" Height="52">
+                                            <Border CornerRadius="12" Background="{DynamicResource AccentSoftBrush}">
+                                                <Path Data="{StaticResource FanGeometry}" Fill="{DynamicResource AccentBrush}" Stretch="Uniform" Width="30" Height="30"
+                                                      c:FanSpin.Rpm="{Binding Rpm}"/>
+                                            </Border>
+                                        </Grid>
+                                        <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                                            <TextBox Text="{Binding Name, UpdateSourceTrigger=LostFocus}" Style="{StaticResource InlineEdit}"
+                                                     c:TextBoxBehavior.CommitOnEnter="True"/>
+                                            <TextBlock Text="{Binding Hardware}" Style="{StaticResource Sub}" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                                        <TextBlock c:RollingText.Text="{Binding RpmText}" Style="{StaticResource Big}" FontSize="34"/>
+                                        <TextBlock Text="об/мин" Style="{StaticResource Sub}" FontSize="13" Margin="8,0,0,7" VerticalAlignment="Bottom"/>
+                                    </StackPanel>
+                                    <DockPanel Margin="0,10,0,0" Visibility="{Binding IsControllable, Converter={StaticResource BoolToVisibility}}">
+                                        <TextBlock Text="Мощность" Style="{StaticResource Sub}" VerticalAlignment="Center"/>
+                                        <TextBlock c:RollingText.Text="{Binding PowerText}" DockPanel.Dock="Right" FontWeight="SemiBold" Width="40" TextAlignment="Right"/>
+                                        <ProgressBar Style="{StaticResource Bar}" Value="{Binding PowerPercent, Mode=OneWay}" Margin="10,0"/>
+                                    </DockPanel>
+                                    <TextBlock Text="Только мониторинг: этот разъём не поддерживает управление" Style="{StaticResource Sub}"
+                                               TextWrapping="Wrap" Margin="0,10,0,0"
+                                               Visibility="{Binding IsControllable, Converter={StaticResource InverseBoolToVisibility}}"/>
+                                </StackPanel>
+
+                                <!-- Управление -->
+                                <StackPanel Grid.Column="1" Margin="28,0,0,0" Visibility="{Binding IsControllable, Converter={StaticResource BoolToVisibility}}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource SegmentHost}">
+                                            <c:SlidingHighlight Fill="{DynamicResource SelectionBrush}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <RadioButton Style="{StaticResource Segment}" Content="Авто"
+                                                                 IsChecked="{Binding Mode, Converter={StaticResource Equals}, ConverterParameter={x:Static core:FanMode.Auto}}"/>
+                                                    <RadioButton Style="{StaticResource Segment}" Content="Фиксированная"
+                                                                 IsChecked="{Binding Mode, Converter={StaticResource Equals}, ConverterParameter={x:Static core:FanMode.Fixed}}"/>
+                                                    <RadioButton Style="{StaticResource Segment}" Content="Кривая"
+                                                                 IsChecked="{Binding Mode, Converter={StaticResource Equals}, ConverterParameter={x:Static core:FanMode.Curve}}"/>
+                                                </StackPanel>
+                                            </c:SlidingHighlight>
+                                        </Border>
+                                        <TextBlock Text="{Binding ModeDescription}" Style="{StaticResource Sub}" VerticalAlignment="Center" Margin="16,0,0,0"/>
+                                    </StackPanel>
+
+                                    <DockPanel Margin="0,22,0,0"
+                                               Visibility="{Binding Mode, Converter={StaticResource EqualsToVisibility}, ConverterParameter={x:Static core:FanMode.Fixed}}">
+                                        <TextBlock Text="{Binding FixedPercent, StringFormat={}{0:0}%}" DockPanel.Dock="Right" Style="{StaticResource StatValue}"
+                                                   FontSize="20" Width="64" TextAlignment="Right"/>
+                                        <Slider Style="{StaticResource AccentSlider}" Value="{Binding FixedPercent}" VerticalAlignment="Center"/>
+                                    </DockPanel>
+
+                                    <StackPanel Margin="0,18,0,0"
+                                                Visibility="{Binding Mode, Converter={StaticResource EqualsToVisibility}, ConverterParameter={x:Static core:FanMode.Curve}}">
+                                        <DockPanel>
+                                            <TextBlock Text="Датчик" Style="{StaticResource Sub}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                            <Button DockPanel.Dock="Right" Style="{StaticResource Ghost}" Content="Сбросить кривую" Margin="10,0,0,0"
+                                                    Command="{Binding ResetCurveCommand}"/>
+                                            <ComboBox ItemsSource="{Binding TemperatureSources}" SelectedValuePath="Id" SelectedValue="{Binding Source}">
+                                                <ComboBox.ItemTemplate>
+                                                    <DataTemplate DataType="vm:TemperatureSourceViewModel">
+                                                        <TextBlock Text="{Binding Display}" TextTrimming="CharacterEllipsis"/>
+                                                    </DataTemplate>
+                                                </ComboBox.ItemTemplate>
+                                            </ComboBox>
+                                        </DockPanel>
+                                        <c:CurveEditor Height="210" Margin="0,14,0,0"
+                                                       Points="{Binding Curve}" CurrentTemperature="{Binding CurrentTemperature}" EditedCommand="{Binding CurveEditedCommand}"
+                                                       Accent="{DynamicResource AccentBrush}" GridBrush="{DynamicResource TrackBrush}" TextBrush="{DynamicResource SubTextBrush}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Border Style="{StaticResource Card}" Margin="0" Visibility="{Binding HasFans, Converter={StaticResource InverseBoolToVisibility}}">
+                <StackPanel>
+                    <TextBlock Text="Кулеры не найдены" Style="{StaticResource CardTitle}"/>
+                    <TextBlock Style="{StaticResource Sub}" TextWrapping="Wrap" Margin="0,6,0,0"
+                               Text="Обороты кулеров материнской платы читаются через драйвер PawnIO. Кулер видеокарты появится автоматически. Также проверьте настройку «Скрывать пустые разъёмы»."/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

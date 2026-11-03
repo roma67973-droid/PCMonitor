@@ -1,0 +1,11 @@
+bin/
+obj/
+dist/
+TestResults/
+.vs/
+*.user
+
+# Данные, которые программа пишет рядом с собой
+settings.json
+history.bin
+pcmonitor.log*

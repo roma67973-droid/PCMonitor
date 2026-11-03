@@ -1,0 +1,18 @@
+<Project>
+  <!-- Общие настройки для всех проектов решения. -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Deterministic>true</Deterministic>
+
+    <!-- Предупреждения — это ошибки: код либо чистый, либо не собирается. -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+    <Authors>PC Monitor</Authors>
+    <Product>PC Monitor</Product>
+    <Version>1.1.0</Version>
+  </PropertyGroup>
+</Project>
