@@ -23,69 +23,24 @@ function Render([int]$s) {
     $dc = $dv.RenderOpen()
     $k = $s / 256.0
 
-    # Плитка: тёмный градиент + тонкая градиентная рамка
+    # Плитка: плоская, тёмно-серая, тонкая рамка
     $pad = if ($small) { 0.5 } else { 8 * $k }
     $rect = New-Object Windows.Rect $pad, $pad, ($s - 2 * $pad), ($s - 2 * $pad)
-    $rad = $s * 0.235
-    $bg = New-Object Windows.Media.LinearGradientBrush (C '#232A4D'), (C '#0A0D1A'), (P 0 0), (P 0.6 1)
-    $border = New-Object Windows.Media.LinearGradientBrush (C '#7FE7FF'), (C '#9B6BFF'), (P 0 0), (P 1 1)
-    $bw = [Math]::Max(1, 5 * $k)
+    $rad = $s * 0.22
+    $bg = New-Object Windows.Media.SolidColorBrush (C '#1D1D1D')
+    $border = New-Object Windows.Media.SolidColorBrush (C '#2F2F2F')
+    $bw = [Math]::Max(1, 4 * $k)
     $dc.DrawRoundedRectangle($bg, (New-Object Windows.Media.Pen $border, $bw), $rect, $rad, $rad)
 
-    # Мягкое свечение в центре
-    $glow = New-Object Windows.Media.RadialGradientBrush (C '#5500C8FF'), (C '#0000C8FF')
-    $dc.DrawEllipse($glow, $null, (P ($s / 2) ($s * 0.52)), ($s * 0.42), ($s * 0.42))
-
-    # Блик сверху
-    if (-not $small) {
-        $hl = New-Object Windows.Media.LinearGradientBrush (C '#22FFFFFF'), (C '#00FFFFFF'), 90
-        $dc.DrawRoundedRectangle($hl, $null, (New-Object Windows.Rect ($pad + $bw), ($pad + $bw), ($s - 2 * $pad - 2 * $bw), ($s * 0.42)), ($rad * 0.9), ($rad * 0.9))
-    }
-
-    # Кольцо-индикатор (270°) с градиентом
-    $cx = $s / 2; $cy = $s * 0.53; $r = $s * 0.30
-    $th = if ($small) { $s * 0.12 } else { $s * 0.085 }
-    $track = New-Object Windows.Media.Pen (New-Object Windows.Media.SolidColorBrush (C '#33FFFFFF')), $th
+    # Кольцо-индикатор (270°): серая дорожка и дуга цвета акцента
+    $cx = $s / 2; $cy = $s * 0.53; $r = $s * 0.28
+    $th = if ($small) { $s * 0.13 } else { $s * 0.10 }
+    $track = New-Object Windows.Media.Pen (New-Object Windows.Media.SolidColorBrush (C '#2B2B2B')), $th
     $track.StartLineCap = 'Round'; $track.EndLineCap = 'Round'
     $dc.DrawGeometry($null, $track, (Arc $cx $cy $r 135 270))
-    $grad = New-Object Windows.Media.LinearGradientBrush
-    $grad.StartPoint = P 0 1; $grad.EndPoint = P 1 0
-    $grad.GradientStops.Add((New-Object Windows.Media.GradientStop (C '#00D2FF'), 0))
-    $grad.GradientStops.Add((New-Object Windows.Media.GradientStop (C '#7C4DFF'), 0.55))
-    $grad.GradientStops.Add((New-Object Windows.Media.GradientStop (C '#FF3EA5'), 1))
-    $pen = New-Object Windows.Media.Pen $grad, $th
+    $pen = New-Object Windows.Media.Pen (New-Object Windows.Media.SolidColorBrush (C '#FF8A3D')), $th
     $pen.StartLineCap = 'Round'; $pen.EndLineCap = 'Round'
-    $sweep = 200
-    $dc.DrawGeometry($null, $pen, (Arc $cx $cy $r 135 $sweep))
-
-    # Светящаяся точка на конце дуги
-    $ea = (135 + $sweep) * [Math]::PI / 180
-    $end = P ($cx + $r * [Math]::Cos($ea)) ($cy + $r * [Math]::Sin($ea))
-    if (-not $small) {
-        $halo = New-Object Windows.Media.RadialGradientBrush (C '#AAFF3EA5'), (C '#00FF3EA5')
-        $dc.DrawEllipse($halo, $null, $end, ($th * 1.5), ($th * 1.5))
-        $dc.DrawEllipse([Windows.Media.Brushes]::White, $null, $end, ($th * 0.28), ($th * 0.28))
-    }
-
-    # Пульс внутри кольца
-    $lw = if ($small) { [Math]::Max(1.6, $s * 0.085) } else { $s * 0.05 }
-    $pts = @(@(-0.17, 0), @(-0.07, 0), @(-0.02, -0.13), @(0.05, 0.12), @(0.10, -0.04), @(0.17, -0.04))
-    $pl = New-Object Windows.Media.StreamGeometry
-    $ctx = $pl.Open()
-    $first = $true
-    foreach ($p in $pts) {
-        $pt = P ($cx + $p[0] * $s) ($cy + $p[1] * $s)
-        if ($first) { $ctx.BeginFigure($pt, $false, $false); $first = $false } else { $ctx.LineTo($pt, $true, $true) }
-    }
-    $ctx.Close()
-    if (-not $small) {
-        $gp = New-Object Windows.Media.Pen (New-Object Windows.Media.SolidColorBrush (C '#3300E5FF')), ($lw * 2.1)
-        $gp.LineJoin = 'Round'; $gp.StartLineCap = 'Round'; $gp.EndLineCap = 'Round'
-        $dc.DrawGeometry($null, $gp, $pl)
-    }
-    $wp = New-Object Windows.Media.Pen ([Windows.Media.Brushes]::White), $lw
-    $wp.LineJoin = 'Round'; $wp.StartLineCap = 'Round'; $wp.EndLineCap = 'Round'
-    $dc.DrawGeometry($null, $wp, $pl)
+    $dc.DrawGeometry($null, $pen, (Arc $cx $cy $r 135 200))
 
     $dc.Close()
     $bmp = New-Object Windows.Media.Imaging.RenderTargetBitmap $s, $s, 96, 96, ([Windows.Media.PixelFormats]::Pbgra32)
