@@ -14,9 +14,9 @@
 |---|---|
 | ![Кулеры](docs/screenshots/fans.png) | ![История](docs/screenshots/history.png) |
 
-| Темы | Настройки |
-|---|---|
-| ![Темы](docs/screenshots/themes.png) | ![Настройки](docs/screenshots/settings.png) |
+| Настройки |
+|---|
+| ![Настройки](docs/screenshots/settings.png) |
 
 ## Запуск
 
@@ -60,7 +60,7 @@ src/PCMonitor/
   Hardware/     опрос датчиков (SensorReader), управление кулерами (FanController), фоновый цикл (HardwareMonitor)
   Core/         настройки, пороги температур, форматирование, история, лог — без зависимостей от UI
   Platform/     WinAPI, трей, автозапуск через Планировщик, единственный экземпляр
-  Theming/      палитры и применение тем
+  Theming/      палитра приложения
   ViewModels/   по модели на страницу + корневая MainViewModel
   Views/        страницы (UserControl), без логики в code-behind
   Controls/     рисуемые элементы (кольцо, графики, редактор кривой) и поведения

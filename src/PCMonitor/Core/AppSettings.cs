@@ -23,8 +23,6 @@ public sealed class AppSettings : IDisposable
     private Timer? _saveTimer;
     private string _path = AppPaths.Settings;
 
-    public string Theme { get; set; } = "Полночь";
-
     public bool StartMinimized { get; set; } = true;
 
     public bool CloseToTray { get; set; } = true;

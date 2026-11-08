@@ -11,7 +11,6 @@ namespace PCMonitor.ViewModels;
 public sealed class SystemStatusViewModel : ObservableObject
 {
     private const int MemoryRefreshEveryTicks = 3;
-    private const int GreetingRefreshEveryTicks = 60;
 
     private int _ticks;
     private bool _isLoading = true;
@@ -42,14 +41,6 @@ public sealed class SystemStatusViewModel : ObservableObject
     public string UptimeText { get => _uptimeText; private set => SetProperty(ref _uptimeText, value); }
 
     public string AppMemoryText { get => _appMemoryText; private set => SetProperty(ref _appMemoryText, value); }
-
-    public string Greeting => DateTime.Now.Hour switch
-    {
-        >= 5 and < 12 => "Доброе утро",
-        >= 12 and < 18 => "Добрый день",
-        >= 18 and < 23 => "Добрый вечер",
-        _ => "Доброй ночи",
-    };
 
     public string AdminStatus => SystemInfo.IsAdministrator ? "есть" : "нет";
 
@@ -85,11 +76,6 @@ public sealed class SystemStatusViewModel : ObservableObject
         if (_ticks % MemoryRefreshEveryTicks == 1)
         {
             AppMemoryText = $"{Environment.WorkingSet / (1024.0 * 1024):0} МБ ОЗУ";
-        }
-
-        if (_ticks % GreetingRefreshEveryTicks == 1)
-        {
-            OnPropertyChanged(nameof(Greeting));
         }
     }
 

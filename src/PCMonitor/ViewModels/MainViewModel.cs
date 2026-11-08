@@ -10,7 +10,6 @@ public enum AppPage
     Fans,
     Display,
     History,
-    Themes,
     Settings,
 }
 
@@ -29,7 +28,6 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         Overview = new OverviewViewModel(Status, Fans, new RelayCommand(() => CurrentPage = AppPage.Fans));
         Display = new DisplayViewModel(settings);
         History = new HistoryViewModel(history);
-        Themes = new ThemesViewModel(settings);
         Settings = new SettingsViewModel(settings, Status, requestRefresh);
     }
 
@@ -44,8 +42,6 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     public DisplayViewModel Display { get; }
 
     public HistoryViewModel History { get; }
-
-    public ThemesViewModel Themes { get; }
 
     public SettingsViewModel Settings { get; }
 
@@ -71,7 +67,6 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         AppPage.Fans => "Кулеры",
         AppPage.Display => "Экран",
         AppPage.History => "История температур",
-        AppPage.Themes => "Темы оформления",
         AppPage.Settings => "Настройки",
         _ => "Обзор системы",
     };

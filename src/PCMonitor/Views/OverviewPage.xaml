@@ -25,9 +25,6 @@
                 <Border Style="{StaticResource Chip}">
                     <TextBlock FontSize="12.5"><Run Text="&#xE916;" FontFamily="{StaticResource Icons}" Foreground="{DynamicResource AccentBrush}"/><Run Text="  Без перезагрузки " Foreground="{DynamicResource SubTextBrush}"/><Run Text="{Binding UptimeText, Mode=OneWay}" FontWeight="SemiBold"/></TextBlock>
                 </Border>
-                <Border Style="{StaticResource Chip}">
-                    <TextBlock FontSize="12.5"><Run Text="&#xE706;" FontFamily="{StaticResource Icons}" Foreground="{DynamicResource Accent2Brush}"/><Run Text="  "/><Run Text="{Binding Greeting, Mode=OneWay}"/></TextBlock>
-                </Border>
                 <TextBlock Text="Инициализация датчиков…" Style="{StaticResource Sub}" VerticalAlignment="Center"
                            Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}"/>
             </StackPanel>

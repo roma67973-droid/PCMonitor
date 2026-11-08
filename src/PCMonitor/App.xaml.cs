@@ -55,7 +55,7 @@ public partial class App : Application
         Log.Info($"Запуск {typeof(App).Assembly.GetName().Version}, администратор: {SystemInfo.IsAdministrator}, PawnIO: {SystemInfo.IsPawnIoInstalled}");
 
         _settings = AppSettings.Load(AppPaths.Settings);
-        ThemeManager.Apply(ThemeManager.Find(_settings.Theme));
+        ThemeManager.Apply();
 
         _history = new TemperatureHistory(AppPaths.History);
         _monitor = new HardwareMonitor(_settings);

@@ -21,7 +21,6 @@ public sealed class TrayIcon : IDisposable
     private readonly Drawing.Icon _appIcon;
     private IntPtr _renderedIcon;
     private int? _renderedTemperature;
-    private string _renderedTheme = string.Empty;
 
     public TrayIcon()
     {
@@ -63,13 +62,12 @@ public sealed class TrayIcon : IDisposable
         _notifyIcon.Text = BuildTooltip(snapshot);
 
         int? temperature = showTemperature && snapshot.CpuTemp is { } t ? (int)Math.Round(t) : null;
-        if (temperature == _renderedTemperature && _renderedTheme == ThemeManager.Current.Name)
+        if (temperature == _renderedTemperature)
         {
             return;
         }
 
         _renderedTemperature = temperature;
-        _renderedTheme = ThemeManager.Current.Name;
 
         if (temperature is not { } value)
         {

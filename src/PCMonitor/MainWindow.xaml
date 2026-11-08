@@ -28,21 +28,7 @@
             <!-- ═══ Боковая панель ═══ -->
             <Border Background="{DynamicResource SideBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,1,0">
                 <DockPanel>
-                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="24,22,0,30">
-                        <!-- Векторный логотип: чёткий на любом DPI, кольцо в цветах темы -->
-                        <Grid Width="38" Height="38">
-                            <Border CornerRadius="10" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Background="{DynamicResource CardBrush}"/>
-                            <c:RingGauge Width="25" Height="25" Margin="0,2.5,0,0" Value="74" Thickness="2.6"
-                                         Brush="{DynamicResource AccentBrush}" TrackBrush="{DynamicResource TrackBrush}"/>
-                            <Path Data="M0,5 L3.8,5 L5.7,0.1 L8.4,9.6 L10.3,3.5 L13,3.5" Stroke="{DynamicResource TextBrush}" StrokeThickness="1.5"
-                                  StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
-                                  HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,2.5,0,0"/>
-                        </Grid>
-                        <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="PC Monitor" FontFamily="{StaticResource DisplayFont}" FontSize="17" FontWeight="Bold"/>
-                            <TextBlock Text="мониторинг · кулеры · экран" Style="{StaticResource Sub}" FontSize="11"/>
-                        </StackPanel>
-                    </StackPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="PC Monitor" FontFamily="{StaticResource DisplayFont}" FontSize="17" FontWeight="SemiBold" Margin="28,24,0,28"/>
 
                     <!-- Мини-сводка внизу панели -->
                     <Border DockPanel.Dock="Bottom" Margin="16" Padding="14,12" CornerRadius="12" Background="{DynamicResource CardBrush}"
@@ -80,8 +66,6 @@
                                          IsChecked="{Binding CurrentPage, Converter={StaticResource Equals}, ConverterParameter={x:Static vm:AppPage.Display}}"/>
                             <RadioButton Style="{StaticResource NavButton}" Tag="&#xE81C;" Content="История"
                                          IsChecked="{Binding CurrentPage, Converter={StaticResource Equals}, ConverterParameter={x:Static vm:AppPage.History}}"/>
-                            <RadioButton Style="{StaticResource NavButton}" Tag="&#xE790;" Content="Темы"
-                                         IsChecked="{Binding CurrentPage, Converter={StaticResource Equals}, ConverterParameter={x:Static vm:AppPage.Themes}}"/>
                             <RadioButton Style="{StaticResource NavButton}" Tag="&#xE713;" Content="Настройки"
                                          IsChecked="{Binding CurrentPage, Converter={StaticResource Equals}, ConverterParameter={x:Static vm:AppPage.Settings}}"/>
                         </StackPanel>
@@ -109,7 +93,6 @@
                     <v:FansPage Tag="{x:Static vm:AppPage.Fans}" DataContext="{Binding Fans}"/>
                     <v:DisplayPage Tag="{x:Static vm:AppPage.Display}" DataContext="{Binding Display}"/>
                     <v:HistoryPage Tag="{x:Static vm:AppPage.History}" DataContext="{Binding History}"/>
-                    <v:ThemesPage Tag="{x:Static vm:AppPage.Themes}" DataContext="{Binding Themes}"/>
                     <v:SettingsPage Tag="{x:Static vm:AppPage.Settings}" DataContext="{Binding Settings}"/>
                 </Grid>
             </Grid>
